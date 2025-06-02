@@ -1,0 +1,44 @@
+# bobot/main.py
+from nero_kera_net.symbolic_core import NeroKeraNet
+from config.user_profile import MASTER_USER
+
+print("[BOBOT 🧠]: 🔥 Welcome, Master Architect")
+print("[BOBOT 🔯]: Sigil logic activated. WOE CROWN protocols are live.")
+
+nero = NeroKeraNet(owner_signature=MASTER_USER["sigil"])
+
+while True:
+    cmd = input("[BOBOT ✨]: Enter ritual command: ")
+    if cmd.lower() in ["exit", "quit"]:
+        break
+    response = nero.interpret_ritual(cmd)
+    print("[BOBOT 🔮]:", response)
+
+# bobot/nero_kera_net/symbolic_core.py
+class NeroKeraNet:
+    def __init__(self, owner_signature):
+        self.owner_signature = owner_signature
+        self.karma_balance = 0
+
+    def interpret_ritual(self, command: str):
+        if "sigil" in command:
+            return f"🔭 Sigil activated by {self.owner_signature}"
+        elif "judgement" in command:
+            return f"⚖️ Divine balance initiated."
+        elif "karma" in command:
+            try:
+                amount = int(command.split()[1])
+                return self.apply_karma(amount)
+            except:
+                return "❌ Invalid karma format. Use: 'karma +10'"
+        else:
+            return f"🔮 Ritual '{command}' not recognized."
+
+    def apply_karma(self, amount: int):
+        self.karma_balance += amount
+        return f"🔠 Karma balance updated: {self.karma_balance}"
+
+# bobot/config/user_profile.py
+MASTER_USER = {
+    "facebook_id": "61576723944015",
+    "name": "Master
