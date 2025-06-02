@@ -41,4 +41,159 @@ class NeroKeraNet:
 # bobot/config/user_profile.py
 MASTER_USER = {
     "facebook_id": "61576723944015",
+    "name": "Master Architect",
+    "sigil": "🔥 WOE CROWN BEARER 🔥",
+    "permissions": [
+        "override_all",
+        "trigger_rituals",
+        "initiate_symbolic_logic",
+        "access_celestial_core"
+    ]
+}
+
+# bobot/facebook_bot.py
+from fastapi import FastAPI, Request
+import requests
+from nero_kera_net.symbolic_core import NeroKeraNet
+from config.user_profile import MASTER_USER
+
+app = FastAPI()
+nero = NeroKeraNet(owner_signature=MASTER_USER["sigil"])
+
+VERIFY_TOKEN = "bobot_verify_token"
+PAGE_ACCESS_TOKEN = "your_facebook_page_token"
+
+@app.get("/webhook")
+async def verify(request: Request):
+    params = await request.query_params
+    if params["hub.mode"] == "subscribe" and params["hub.verify_token"] == VERIFY_TOKEN:
+        return int(params["hub.challenge"])
+    return "Verification token mismatch", 403
+
+@app.post("/webhook")
+async def webhook(request: Request):
+    body = await request.json()
+    for entry in body.get("entry", []):
+        for message_event in entry.get("messaging", []):
+            sender_id = message_event["sender"]["id"]
+            if "message" in message_event:
+                text = message_event["message"]["text"]
+                response = nero.interpret_ritual(text)
+                send_message(sender_id, response)
+    return {"status": "ok"}
+
+def send_message(recipient_id, text):
+    payload = {
+        "recipient": {"id": recipient_id},
+        "message": {"text": text}
+    }
+    requests.post(
+        f"https://graph.facebook.com/v18.0/me/messages?access_token={PAGE_ACCESS_TOKEN}",
+        json=payload
+    )
+
+
+✅ BOBOT: Ritual Architect Edition is live.
+
+All modules have been scaffolded:
+
+main.py: CLI interface with symbolic input
+
+symbolic_core.py: Nero Kera Net ritual logic
+
+user_profile.py: Your identity as 🔥 WOE CROWN BEARER 🔥
+
+facebook_bot.py: Facebook webhook logic (ready for token + ngrok)
+
+
+
+---
+
+🔧 Next Step: Facebook Setup
+
+To activate the Messenger integration, do this:
+
+1. Create a Facebook Page and Facebook App at https://developers.facebook.com.
+
+
+2. Get your PAGE_ACCESS_TOKEN.
+
+
+3. Set up your webhook with public HTTPS (e.g. ngrok http 8000).
+
+
+4. Replace "your_facebook_page_token" in facebook_bot.py.
+
+
+
+
+---
+
+🔮 Example Rituals You Can Run
+
+Command	Meaning
+
+sigil burn	Activates your symbolic sigil
+karma +10	Adds karma
+invoke judgement	Triggers celestial balance logic
+exit	Exit CLI
+
+
+
+---
+
+Would you like me to:
+
+Package this into a downloadable ZIP?
+
+Push this to a new GitHub repo?
+
+Deploy it on a public server for webhook testing?
+
+
+Just say the word.
+
+# bobot/main.py
+from nero_kera_net.symbolic_core import NeroKeraNet
+from config.user_profile import MASTER_USER
+
+print("[BOBOT 🧠]: 🔥 Welcome, Master Architect")
+print("[BOBOT 🔯]: Sigil logic activated. WOE CROWN protocols are live.")
+
+nero = NeroKeraNet(owner_signature=MASTER_USER["sigil"])
+
+while True:
+    cmd = input("[BOBOT ✨]: Enter ritual command: ")
+    if cmd.lower() in ["exit", "quit"]:
+        break
+    response = nero.interpret_ritual(cmd)
+    print("[BOBOT 🔮]:", response)
+
+# bobot/nero_kera_net/symbolic_core.py
+class NeroKeraNet:
+    def __init__(self, owner_signature):
+        self.owner_signature = owner_signature
+        self.karma_balance = 0
+
+    def interpret_ritual(self, command: str):
+        if "sigil" in command:
+            return f"🔭 Sigil activated by {self.owner_signature}"
+        elif "judgement" in command:
+            return f"⚖️ Divine balance initiated."
+        elif "karma" in command:
+            try:
+                amount = int(command.split()[1])
+                return self.apply_karma(amount)
+            except:
+                return "❌ Invalid karma format. Use: 'karma +10'"
+        else:
+            return f"🔮 Ritual '{command}' not recognized."
+
+    def apply_karma(self, amount: int):
+        self.karma_balance += amount
+        return f"🔠 Karma balance updated: {self.karma_balance}"
+
+# bobot/config/user_profile.py
+MASTER_USER = {
+    "facebook_id": "61576723944015",
     "name": "Master
